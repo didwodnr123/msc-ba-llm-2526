@@ -64,6 +64,34 @@ LLM/
 
 [Jigsaw Toxic Comment Classification Challenge](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge) — Wikipedia talk page comments annotated for six toxicity labels: `toxic`, `severe_toxic`, `obscene`, `threat`, `insult`, `identity_hate`.
 
+## Model & Configuration
+
+### Model — GPT-4o-mini
+
+`gpt-4o-mini` was chosen as the default model for the following reasons:
+
+- **Cost-efficient**: significantly cheaper than GPT-4o while retaining strong instruction-following ability
+- **Fast**: low latency makes it practical for batch inference over hundreds of samples
+- **Sufficient capability**: classification tasks with structured output constraints do not require the full capacity of larger models
+
+Alternative models can be used via the `--model` flag:
+
+| Model | Notes |
+|-------|-------|
+| `gpt-4o-mini` | Default — best cost/performance balance |
+| `gpt-4o` | Higher accuracy, higher cost |
+| `gpt-4-turbo` | Strong reasoning, higher cost |
+
+```bash
+python run.py --model gpt-4o
+```
+
+### Temperature — 0
+
+`temperature=0` was set to make outputs **fully deterministic**. Since this task requires the model to output a fixed set of labels in a consistent format, randomness is undesirable — the same comment should always produce the same prediction, ensuring reproducible evaluation results.
+
+Raising the temperature (e.g., `0.5`–`1.0`) would introduce variability in outputs, which could degrade parsing reliability and make results non-reproducible. To change it, edit `src/inference.py:43`.
+
 ## Tech Stack
 
 - **LLM**: GPT-4o-mini (OpenAI API)
