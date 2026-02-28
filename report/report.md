@@ -104,6 +104,26 @@ Labels:
 | Inference | Parallelised via `ThreadPoolExecutor` (4 workers) |
 | Fine-tuning | None — inference only |
 
+**Model selection — GPT-4o-mini**
+
+GPT-4o-mini was selected for the following reasons:
+
+- **Cost-efficiency**: substantially cheaper than GPT-4o whilst retaining strong instruction-following capability, making it practical for batch inference over hundreds of samples
+- **Speed**: low latency allows the full 500-sample evaluation to complete within minutes
+- **Task suitability**: structured classification with a fixed label set does not require the full capacity of larger models
+
+Alternative models are directly supported via the `--model` argument:
+
+| Model | Characteristic |
+|-------|---------------|
+| `gpt-4o-mini` | Default — optimal cost/performance balance |
+| `gpt-4o` | Higher accuracy, higher cost |
+| `gpt-4-turbo` | Strong reasoning capability, higher cost |
+
+**Temperature — 0**
+
+`temperature=0` was set to produce fully deterministic outputs. As the task requires the model to return a fixed set of labels in a consistent format, any randomness is undesirable — the same comment must always yield the same prediction to ensure reproducible evaluation results. Higher temperature values (e.g., 0.5–1.0) would introduce variability in outputs, degrading both parsing reliability and result reproducibility.
+
 LLM responses were parsed by splitting on commas and matching tokens against the known label set. Unrecognised tokens were silently ignored; an empty or `none` response was treated as all-negative.
 
 ---
