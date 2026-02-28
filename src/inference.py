@@ -15,7 +15,6 @@ from openai import OpenAI
 from dotenv import load_dotenv
 
 from src.prompts import (
-    LABELS,
     ZERO_SHOT_SYSTEM, zero_shot_user,
     FEW_SHOT_SYSTEM, few_shot_user,
     parse_response,
