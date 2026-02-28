@@ -23,17 +23,23 @@ from src.prompts import (
 load_dotenv()
 client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
+from genai_pricing import openai_prompt_cost
+
 
 def call_llm(
     system: str,
     user: str,
     model: str = 'gpt-4o-mini',
     max_retries: int = 3,
-) -> str:
-    """Make a single LLM API call with exponential back-off on failure."""
+) -> tuple[str, float]:
+    """Make a single LLM API call with exponential back-off on failure.
+
+    Returns:
+        (response_text, cost_usd)
+    """
     for attempt in range(max_retries):
         try:
-            response = client.chat.completions.create(
+            resp = client.chat.completions.create(
                 model=model,
                 messages=[
                     {'role': 'system', 'content': system},
@@ -42,7 +48,9 @@ def call_llm(
                 temperature=0,
                 max_tokens=50,
             )
-            return response.choices[0].message.content or ''
+            text = resp.choices[0].message.content or ''
+            cost = openai_prompt_cost(model, user, text, resp).get('total_cost', 0.0)
+            return text, cost
         except Exception as e:
             if attempt < max_retries - 1:
                 wait = 2 ** attempt
@@ -50,8 +58,8 @@ def call_llm(
                 time.sleep(wait)
             else:
                 print(f"  API error (final failure): {e}")
-                return ''
-    return ''
+                return '', 0.0
+    return '', 0.0
 
 
 def run_inference(
@@ -86,10 +94,13 @@ def run_inference(
             futures[future] = row
 
         records_map = {}
+        total_cost = 0.0
+
         for future in as_completed(futures):
-            row    = futures[future]
-            raw    = future.result()
-            parsed = parse_response(raw)
+            row          = futures[future]
+            raw, cost    = future.result()
+            parsed       = parse_response(raw)
+            total_cost  += cost
 
             record = {'id': row['id'], 'raw_response': raw}
             record.update({f'pred_{k}': v for k, v in parsed.items()})
@@ -99,6 +110,7 @@ def run_inference(
             if completed % 50 == 0 or completed == total:
                 print(f"  Progress: {completed}/{total}")
 
+    print(f"  Estimated cost: ${total_cost:.6f} USD")
     records = [records_map[i] for i in sorted(records_map)]
     return pd.DataFrame(records)
 
