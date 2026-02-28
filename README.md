@@ -4,13 +4,18 @@ A multi-label toxic comment classification system built with prompt engineering.
 
 ## Results
 
-| Metric | Zero-Shot | Few-Shot |
-|--------|-----------|----------|
-| Exact Match Accuracy | 0.544 | **0.594** |
-| Micro F1 | 0.663 | **0.742** |
-| Macro F1 | 0.493 | **0.585** |
+Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from the Jigsaw dataset.
 
-Evaluated on 500 sampled comments (250 toxic / 250 non-toxic) from the Jigsaw dataset.
+| Metric | Zero-Shot | Few-Shot-5 | Few-Shot-10 |
+|--------|-----------|------------|-------------|
+| Exact Match Accuracy | 0.548 | 0.578 | **0.581** |
+| Micro Precision | **0.713** | 0.699 | 0.694 |
+| Micro Recall | 0.605 | 0.760 | **0.770** |
+| Micro F1 | 0.654 | 0.728 | **0.730** |
+| Macro F1 | 0.516 | 0.597 | **0.599** |
+| API Cost (GPT-4o-mini) | $0.25 | $0.42 | $0.58 |
+
+Few-Shot-5 and Few-Shot-10 refer to prompts with 5 and 10 labelled examples respectively.
 
 ## Setup
 
@@ -32,13 +37,14 @@ cp .env.example .env
 python run.py
 
 # Step by step
-python run.py --step preprocess --n_samples 500
+python run.py --step preprocess --n_samples 10000
 python run.py --step infer --mode zero_shot
-python run.py --step infer --mode few_shot
+python run.py --step infer --mode few_shot_5
+python run.py --step infer --mode few_shot_10
 python run.py --step evaluate
 
 # Options
-python run.py --n_samples 200   # adjust sample size
+python run.py --n_samples 500   # adjust sample size
 python run.py --model gpt-4o    # change model
 ```
 
