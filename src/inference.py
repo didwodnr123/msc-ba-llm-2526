@@ -16,7 +16,7 @@ from dotenv import load_dotenv
 
 from src.prompts import (
     ZERO_SHOT_SYSTEM, zero_shot_user,
-    FEW_SHOT_SYSTEM, few_shot_user,
+    FEW_SHOT_SYSTEM, few_shot_5_user, few_shot_10_user,
     parse_response,
 )
 
@@ -73,17 +73,22 @@ def run_inference(
 
     Args:
         df:      DataFrame with 'id' and 'comment_text' columns
-        mode:    'zero_shot' or 'few_shot'
+        mode:    'zero_shot', 'few_shot_5', or 'few_shot_10'
         model:   OpenAI model name
         workers: Number of concurrent API requests
 
     Returns:
         DataFrame with columns: id, raw_response, pred_<label>...
     """
-    assert mode in ('zero_shot', 'few_shot'), f"mode must be 'zero_shot' or 'few_shot', got: {mode}"
+    assert mode in ('zero_shot', 'few_shot_5', 'few_shot_10'), \
+        f"mode must be 'zero_shot', 'few_shot_5', or 'few_shot_10', got: {mode}"
 
     system    = ZERO_SHOT_SYSTEM if mode == 'zero_shot' else FEW_SHOT_SYSTEM
-    prompt_fn = zero_shot_user   if mode == 'zero_shot' else few_shot_user
+    prompt_fn = {
+        'zero_shot':   zero_shot_user,
+        'few_shot_5':  few_shot_5_user,
+        'few_shot_10': few_shot_10_user,
+    }[mode]
     total     = len(df)
     completed = 0
 
@@ -117,7 +122,7 @@ def run_inference(
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Run LLM inference')
-    parser.add_argument('--mode',    choices=['zero_shot', 'few_shot'], default='zero_shot')
+    parser.add_argument('--mode',    choices=['zero_shot', 'few_shot_5', 'few_shot_10'], default='zero_shot')
     parser.add_argument('--model',   default='gpt-4o-mini')
     parser.add_argument('--input',   default='results/sample.csv')
     parser.add_argument('--output',  default=None)

@@ -2,6 +2,7 @@
 Prompt templates and response parser module.
 
 - Builds zero-shot and few-shot prompts for toxicity classification
+- Supports 5-example and 10-example few-shot variants
 - Parses LLM output into a binary label dictionary
 """
 
@@ -28,31 +29,8 @@ def zero_shot_user(comment: str) -> str:
 
 
 # ---------------------------------------------------------------------------
-# Few-shot
+# Few-shot (shared system prompt)
 # ---------------------------------------------------------------------------
-
-_FEW_SHOT_EXAMPLES = [
-    {
-        "comment": "You are a complete moron and nobody likes you.",
-        "labels": "toxic, insult",
-    },
-    {
-        "comment": "I know where you live. You better watch your back.",
-        "labels": "toxic, threat",
-    },
-    {
-        "comment": "This is absolute garbage!! You disgusting piece of filth!!",
-        "labels": "toxic, severe_toxic, obscene, insult",
-    },
-    {
-        "comment": "Go back to your country, you don't belong here.",
-        "labels": "toxic, identity_hate",
-    },
-    {
-        "comment": "Thank you for the clarification. I appreciate your help.",
-        "labels": "none",
-    },
-]
 
 FEW_SHOT_SYSTEM = (
     "You are a content moderation assistant. "
@@ -63,14 +41,70 @@ FEW_SHOT_SYSTEM = (
     "Do not explain or add any other text."
 )
 
-_FEW_SHOT_BLOCK = "\n\n".join(
-    f'Comment: "{ex["comment"]}"\nLabels: {ex["labels"]}'
-    for ex in _FEW_SHOT_EXAMPLES
-)
+# 10 labelled examples covering diverse label combinations
+_FEW_SHOT_EXAMPLES = [
+    # ── 5-example set ──────────────────────────────────────────────────────
+    {
+        "comment": "You are a complete moron and nobody likes you.",
+        "labels":  "toxic, insult",
+    },
+    {
+        "comment": "I know where you live. You better watch your back.",
+        "labels":  "toxic, threat",
+    },
+    {
+        "comment": "This is absolute garbage!! You disgusting piece of filth!!",
+        "labels":  "toxic, severe_toxic, obscene, insult",
+    },
+    {
+        "comment": "Go back to your country, you don't belong here.",
+        "labels":  "toxic, identity_hate",
+    },
+    {
+        "comment": "Thank you for the clarification. I appreciate your help.",
+        "labels":  "none",
+    },
+    # ── Additional 5 examples (used in 10-example set only) ────────────────
+    {
+        "comment": "I will find you and make you pay for this.",
+        "labels":  "toxic, threat",
+    },
+    {
+        "comment": "Your kind has no place in civilised society.",
+        "labels":  "toxic, identity_hate",
+    },
+    {
+        "comment": "This f***ing idiot has no clue what he's talking about.",
+        "labels":  "toxic, obscene, insult",
+    },
+    {
+        "comment": "What a great article! Well researched and informative.",
+        "labels":  "none",
+    },
+    {
+        "comment": "You worthless piece of garbage, you should be ashamed of yourself.",
+        "labels":  "toxic, severe_toxic, insult",
+    },
+]
 
 
-def few_shot_user(comment: str) -> str:
-    return f"{_FEW_SHOT_BLOCK}\n\nComment: \"{comment}\"\nLabels:"
+def _build_block(examples: list) -> str:
+    return "\n\n".join(
+        f'Comment: "{ex["comment"]}"\nLabels: {ex["labels"]}'
+        for ex in examples
+    )
+
+
+_FEW_SHOT_5_BLOCK  = _build_block(_FEW_SHOT_EXAMPLES[:5])
+_FEW_SHOT_10_BLOCK = _build_block(_FEW_SHOT_EXAMPLES[:10])
+
+
+def few_shot_5_user(comment: str) -> str:
+    return f'{_FEW_SHOT_5_BLOCK}\n\nComment: "{comment}"\nLabels:'
+
+
+def few_shot_10_user(comment: str) -> str:
+    return f'{_FEW_SHOT_10_BLOCK}\n\nComment: "{comment}"\nLabels:'
 
 
 # ---------------------------------------------------------------------------

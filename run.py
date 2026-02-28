@@ -2,13 +2,14 @@
 Full pipeline entry point.
 
 Usage:
-    python run.py                                  # full run (500 samples, both modes)
-    python run.py --step preprocess --n_samples 500
+    python run.py                                      # full run (all 3 modes)
+    python run.py --step preprocess --n_samples 10000
     python run.py --step infer --mode zero_shot
-    python run.py --step infer --mode few_shot
+    python run.py --step infer --mode few_shot_5
+    python run.py --step infer --mode few_shot_10
     python run.py --step evaluate
-    python run.py --n_samples 200                  # adjust sample size
-    python run.py --model gpt-4o-mini              # change model
+    python run.py --n_samples 500                      # adjust sample size
+    python run.py --model gpt-4o-mini                  # change model
 """
 
 import os
@@ -23,8 +24,8 @@ from src.evaluate import load_ground_truth, load_predictions, compute_metrics, p
 def main():
     parser = argparse.ArgumentParser(description='Toxic Comment Classification Pipeline')
     parser.add_argument('--step',      choices=['preprocess', 'infer', 'evaluate', 'all'], default='all')
-    parser.add_argument('--mode',      choices=['zero_shot', 'few_shot', 'both'], default='both')
-    parser.add_argument('--n_samples', type=int, default=500,        help='Number of samples to evaluate')
+    parser.add_argument('--mode',      choices=['zero_shot', 'few_shot_5', 'few_shot_10', 'all'], default='all')
+    parser.add_argument('--n_samples', type=int, default=10000,      help='Number of samples to evaluate')
     parser.add_argument('--model',     default='gpt-4o-mini',        help='OpenAI model name')
     parser.add_argument('--workers',   type=int, default=4,          help='Number of concurrent API requests')
     args = parser.parse_args()
@@ -40,7 +41,7 @@ def main():
         print(f"      Saved: {sample_path}")
 
     # ── Step 2: Inference ─────────────────────────────────────────────────────
-    modes = ['zero_shot', 'few_shot'] if args.mode == 'both' else [args.mode]
+    modes = ['zero_shot', 'few_shot_5', 'few_shot_10'] if args.mode == 'all' else [args.mode]
 
     if args.step in ('infer', 'all'):
         df = pd.read_csv(sample_path)
