@@ -1,0 +1,16 @@
+Compare performance using generated prompts against prompts taken from the training set.
+  
+Think about checking performance for specific label combinations. Compare the combinations present in the examples provided to the LLM against the ones not specified.
+  E.g.: For a one-shot model: "You are a moron, I will get to you" (Toxic, Threat, Insult)
+        Check whether performance (F1) is better for the combination Toxic + Threat + Insult than for the other label combinations. Allows to assess whether prompting 
+        with specific examples boosts overall (for all labels) or realtive (specific label combination provided in the example) perfromance.
+
+Contrast performance of various LLM models:
+-GPT4.1
+-GPT4.1-Mini
+-GPT4.1-Nano
+-GPT4o
+-GPT40-Mini
+-GPT4o-Nano
+-GPT5.2
+-Llama 3.3
