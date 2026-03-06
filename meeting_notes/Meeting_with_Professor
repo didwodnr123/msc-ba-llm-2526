@@ -1,7 +1,7 @@
 Questions:
 -Does Model Performance influence grading (metrics like F1)? Growing sample size could introduce difficulties.
     Find tradeoff between sample size and performance
-    Combine ML and LLM (for complicated cases)
+    Consider combining ML (for simple cases) and LLM (for complicated cases)
 
 -Is 10 000 sample big enough? Increase?
 
