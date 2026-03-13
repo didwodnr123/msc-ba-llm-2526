@@ -10,11 +10,11 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 
 | Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
 |-------|-----------|------------|-------------|------------------|-------------------|
-| `toxic-bert` *(fine-tuned baseline)* | — | N/A | N/A | N/A | N/A |
-| `unbiased-toxic-roberta` *(fine-tuned baseline)* | — | N/A | N/A | N/A | N/A |
+| `toxic-bert` *(fine-tuned)* | — | N/A | N/A | N/A | N/A |
+| `unbiased-toxic-roberta` *(fine-tuned)* | — | N/A | N/A | N/A | N/A |
 | `gpt-5-mini` | — | — | — | — | — |
 | `gpt-5.4` | — | — | — | — | — |
-| `gpt-4.1` | — | — | — | — | — |
+| `gpt-4.1` *(baseline)* | — | — | — | — | — |
 
 ### API Cost (10,000 samples)
 
