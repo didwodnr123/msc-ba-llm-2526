@@ -43,7 +43,7 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 
 ### Dataset & Sampling
 
-- **Source**: Jigsaw test set (`data/test.csv` + `data/test_labels.csv`)
+- **Source**: [Jigsaw Toxic Comment Classification Challenge](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge) — test set (`data/test.csv` + `data/test_labels.csv`)
 - Unlabelled rows (`toxic == -1`) excluded before sampling
 - **Stratified sampling**: 5,000 toxic / 5,000 non-toxic (random_state=42)
 - "Toxic" defined as having at least one positive label across the 6 categories
@@ -55,6 +55,14 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 - 10 target label combinations selected to cover diverse toxicity patterns (clean, single-label, and multi-label cases)
 - Short comments preferred (≤150 chars) to keep prompt length manageable
 - **Synth variants**: hardcoded LLM-generated examples — no real training data in the prompt
+
+### Models
+
+| Model | Notes |
+|-------|-------|
+| `gpt-4.1` | **Default** — latest GPT-4 series, high capability |
+| `gpt-5-mini` | Cost-efficient, fast |
+| `gpt-5.4` | Higher accuracy than gpt-5-mini |
 
 ### Inference Configuration
 
@@ -80,7 +88,7 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 - **Exact Match Accuracy**: fraction of samples where all 6 labels are simultaneously correct
 - Undefined precision/recall treated as 0 (`zero_division=0`)
 
-## Setup
+## Installation
 
 **1. Install dependencies**
 ```bash
@@ -135,40 +143,6 @@ LLM/
 ├── run.py                     # Pipeline entry point
 └── requirements.txt
 ```
-
-## Dataset
-
-[Jigsaw Toxic Comment Classification Challenge](https://www.kaggle.com/competitions/jigsaw-toxic-comment-classification-challenge) — Wikipedia talk page comments annotated for six toxicity labels: `toxic`, `severe_toxic`, `obscene`, `threat`, `insult`, `identity_hate`.
-
-## Model & Configuration
-
-### Models
-
-| Model | Notes |
-|-------|-------|
-| `gpt-4.1` | **Default** — latest GPT-4 series, high capability |
-| `gpt-5-mini` | Cost-efficient, fast |
-| `gpt-5.4` | Higher accuracy than gpt-5-mini |
-
-```bash
-# Single model (default)
-python run.py --models gpt-4.1
-
-# Compare all models in one run
-python run.py --models gpt-4.1 gpt-5-mini gpt-5.4
-```
-
-### Temperature
-
-`temperature=0` is set for models that support it (e.g., `gpt-4.1`) to make outputs **fully deterministic** — the same comment always produces the same prediction, ensuring reproducible evaluation results.
-
-GPT-5 series models (`gpt-5-mini`, `gpt-5.4`) do not support `temperature=0`; the parameter is omitted for these models (default: 1). See `src/inference.py` for details.
-
-## Tech Stack
-
-- **LLM**: GPT-4.1 / GPT-5-mini / GPT-5.4 (OpenAI API)
-- **Data**: pandas
-- **Evaluation**: scikit-learn
 
 ## Vibe Coding Notes
 
