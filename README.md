@@ -23,7 +23,8 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 | `toxic-bert` | **0.883** |
 | `unbiased-toxic-roberta` | 0.831 |
 
-<br>
+Micro F1 is used as the primary metric because it aggregates TP/FP/FN across all labels and samples, reflecting overall system performance under label imbalance — where labels like `threat` and `identity_hate` are far rarer than `toxic`. Macro F1 and Exact Match Accuracy are reported as supplementary metrics.
+
 Per-label precision/recall/F1 available in [`results/evaluation_summary.md`](results/evaluation_summary.md)
 
 ### Estimated API Cost (10,000 samples)
