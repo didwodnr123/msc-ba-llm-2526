@@ -4,8 +4,10 @@
 # Data (too large for git)
 data/
 
-# Generated results
+# Generated results (exclude large prediction CSVs)
 results/
+!results/evaluation_summary.csv
+!results/evaluation_summary.md
 
 # Python
 __pycache__/

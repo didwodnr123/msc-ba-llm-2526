@@ -74,7 +74,7 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 - **Micro F1** *(primary)*: aggregates TP/FP/FN across all labels and samples — reflects overall classification performance
 - **Macro F1**: per-label F1 averaged unweighted — sensitive to performance on rare labels
 - **Exact Match Accuracy**: fraction of samples where all 6 labels are simultaneously correct
-- Per-label precision/recall/F1 available in `results/evaluation_summary.csv`
+- Per-label precision/recall/F1 available in [`results/evaluation_summary.md`](results/evaluation_summary.md)
 - Undefined precision/recall treated as 0 (`zero_division=0`)
 
 ## Setup
