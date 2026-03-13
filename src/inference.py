@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from src.prompts import (
     ZERO_SHOT_SYSTEM, zero_shot_user,
     FEW_SHOT_SYSTEM, few_shot_5_user, few_shot_10_user,
+    few_shot_5_synth_user, few_shot_10_synth_user,
     parse_response,
 )
 
@@ -29,7 +30,7 @@ from genai_pricing import openai_prompt_cost
 def call_llm(
     system: str,
     user: str,
-    model: str = 'gpt-4o-mini',
+    model: str = 'gpt-5-mini',
     max_retries: int = 3,
 ) -> tuple[str, float]:
     """Make a single LLM API call with exponential back-off on failure.
@@ -39,15 +40,18 @@ def call_llm(
     """
     for attempt in range(max_retries):
         try:
-            resp = client.chat.completions.create(
-                model=model,
-                messages=[
+            kwargs: dict = {
+                'model':                model,
+                'messages':             [
                     {'role': 'system', 'content': system},
                     {'role': 'user',   'content': user},
                 ],
-                temperature=0,
-                max_tokens=50,
-            )
+                'max_completion_tokens': 200,
+            }
+            # GPT-5+ models only support the default temperature (1); omit for them
+            if not model.startswith('gpt-5'):
+                kwargs['temperature'] = 0
+            resp = client.chat.completions.create(**kwargs)
             text = resp.choices[0].message.content or ''
             cost = openai_prompt_cost(model, user, text, resp).get('total_cost', 0.0)
             return text, cost
@@ -65,7 +69,7 @@ def call_llm(
 def run_inference(
     df: pd.DataFrame,
     mode: str = 'zero_shot',
-    model: str = 'gpt-4o-mini',
+    model: str = 'gpt-5-mini',
     workers: int = 4,
 ) -> pd.DataFrame:
     """
@@ -80,14 +84,16 @@ def run_inference(
     Returns:
         DataFrame with columns: id, raw_response, pred_<label>...
     """
-    assert mode in ('zero_shot', 'few_shot_5', 'few_shot_10'), \
-        f"mode must be 'zero_shot', 'few_shot_5', or 'few_shot_10', got: {mode}"
+    _VALID_MODES = ('zero_shot', 'few_shot_5', 'few_shot_10', 'few_shot_5_synth', 'few_shot_10_synth')
+    assert mode in _VALID_MODES, f"mode must be one of {_VALID_MODES}, got: {mode}"
 
     system    = ZERO_SHOT_SYSTEM if mode == 'zero_shot' else FEW_SHOT_SYSTEM
     prompt_fn = {
-        'zero_shot':   zero_shot_user,
-        'few_shot_5':  few_shot_5_user,
-        'few_shot_10': few_shot_10_user,
+        'zero_shot':          zero_shot_user,
+        'few_shot_5':         few_shot_5_user,
+        'few_shot_10':        few_shot_10_user,
+        'few_shot_5_synth':   few_shot_5_synth_user,
+        'few_shot_10_synth':  few_shot_10_synth_user,
     }[mode]
     total     = len(df)
     completed = 0

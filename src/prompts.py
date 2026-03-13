@@ -6,6 +6,8 @@ Prompt templates and response parser module.
 - Parses LLM output into a binary label dictionary
 """
 
+import json
+import os
 import re
 
 LABELS = ['toxic', 'severe_toxic', 'obscene', 'threat', 'insult', 'identity_hate']
@@ -41,51 +43,33 @@ FEW_SHOT_SYSTEM = (
     "Do not explain or add any other text."
 )
 
-# 10 labelled examples covering diverse label combinations
-_FEW_SHOT_EXAMPLES = [
+# Synthetic fallback examples (used when few_shot_examples.json has not been built yet)
+_SYNTHETIC_FEW_SHOT_EXAMPLES = [
     # ── 5-example set ──────────────────────────────────────────────────────
-    {
-        "comment": "You are a complete moron and nobody likes you.",
-        "labels":  "toxic, insult",
-    },
-    {
-        "comment": "I know where you live. You better watch your back.",
-        "labels":  "toxic, threat",
-    },
-    {
-        "comment": "This is absolute garbage!! You disgusting piece of filth!!",
-        "labels":  "toxic, severe_toxic, obscene, insult",
-    },
-    {
-        "comment": "Go back to your country, you don't belong here.",
-        "labels":  "toxic, identity_hate",
-    },
-    {
-        "comment": "Thank you for the clarification. I appreciate your help.",
-        "labels":  "none",
-    },
+    {"comment": "You are a complete moron and nobody likes you.",          "labels": "toxic, insult"},
+    {"comment": "I know where you live. You better watch your back.",      "labels": "toxic, threat"},
+    {"comment": "This is absolute garbage!! You disgusting piece of filth!!", "labels": "toxic, severe_toxic, obscene, insult"},
+    {"comment": "Go back to your country, you don't belong here.",         "labels": "toxic, identity_hate"},
+    {"comment": "Thank you for the clarification. I appreciate your help.", "labels": "none"},
     # ── Additional 5 examples (used in 10-example set only) ────────────────
-    {
-        "comment": "I will find you and make you pay for this.",
-        "labels":  "toxic, threat",
-    },
-    {
-        "comment": "Your kind has no place in civilised society.",
-        "labels":  "toxic, identity_hate",
-    },
-    {
-        "comment": "This f***ing idiot has no clue what he's talking about.",
-        "labels":  "toxic, obscene, insult",
-    },
-    {
-        "comment": "What a great article! Well researched and informative.",
-        "labels":  "none",
-    },
-    {
-        "comment": "You worthless piece of garbage, you should be ashamed of yourself.",
-        "labels":  "toxic, severe_toxic, insult",
-    },
+    {"comment": "I will find you and make you pay for this.",              "labels": "toxic, threat"},
+    {"comment": "Your kind has no place in civilised society.",            "labels": "toxic, identity_hate"},
+    {"comment": "This f***ing idiot has no clue what he's talking about.", "labels": "toxic, obscene, insult"},
+    {"comment": "What a great article! Well researched and informative.",   "labels": "none"},
+    {"comment": "You worthless piece of garbage, you should be ashamed of yourself.", "labels": "toxic, severe_toxic, insult"},
 ]
+
+_FEW_SHOT_EXAMPLES_PATH = 'results/few_shot_examples.json'
+
+
+def _load_few_shot_examples() -> list[dict]:
+    if os.path.exists(_FEW_SHOT_EXAMPLES_PATH):
+        with open(_FEW_SHOT_EXAMPLES_PATH, encoding='utf-8') as f:
+            return json.load(f)
+    return _SYNTHETIC_FEW_SHOT_EXAMPLES
+
+
+_FEW_SHOT_EXAMPLES = _load_few_shot_examples()
 
 
 def _build_block(examples: list) -> str:
@@ -95,8 +79,13 @@ def _build_block(examples: list) -> str:
     )
 
 
+# Real-data blocks (from results/few_shot_examples.json)
 _FEW_SHOT_5_BLOCK  = _build_block(_FEW_SHOT_EXAMPLES[:5])
 _FEW_SHOT_10_BLOCK = _build_block(_FEW_SHOT_EXAMPLES[:10])
+
+# Synthetic blocks (hardcoded LLM-generated examples)
+_FEW_SHOT_5_SYNTH_BLOCK  = _build_block(_SYNTHETIC_FEW_SHOT_EXAMPLES[:5])
+_FEW_SHOT_10_SYNTH_BLOCK = _build_block(_SYNTHETIC_FEW_SHOT_EXAMPLES[:10])
 
 
 def few_shot_5_user(comment: str) -> str:
@@ -105,6 +94,14 @@ def few_shot_5_user(comment: str) -> str:
 
 def few_shot_10_user(comment: str) -> str:
     return f'{_FEW_SHOT_10_BLOCK}\n\nComment: "{comment}"\nLabels:'
+
+
+def few_shot_5_synth_user(comment: str) -> str:
+    return f'{_FEW_SHOT_5_SYNTH_BLOCK}\n\nComment: "{comment}"\nLabels:'
+
+
+def few_shot_10_synth_user(comment: str) -> str:
+    return f'{_FEW_SHOT_10_SYNTH_BLOCK}\n\nComment: "{comment}"\nLabels:'
 
 
 # ---------------------------------------------------------------------------

@@ -6,14 +6,23 @@ A multi-label toxic comment classification system built with prompt engineering.
 
 Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from the Jigsaw dataset.
 
-| Metric | Zero-Shot | Few-Shot-5 | Few-Shot-10 |
-|--------|-----------|------------|-------------|
-| Exact Match Accuracy | 0.548 | 0.578 | **0.581** |
-| Micro Precision | **0.713** | 0.699 | 0.694 |
-| Micro Recall | 0.605 | 0.760 | **0.770** |
-| Micro F1 | 0.654 | 0.728 | **0.730** |
-| Macro F1 | 0.516 | 0.597 | **0.599** |
-| API Cost (GPT-4o-mini) | $0.25 | $0.42 | $0.58 |
+### Micro F1 by Model × Prompting Mode
+
+| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 |
+|-------|-----------|------------|-------------|
+| `toxic-bert` *(fine-tuned baseline)* | — | N/A | N/A |
+| `unbiased-toxic-roberta` *(fine-tuned baseline)* | — | N/A | N/A |
+| `gpt-5-mini` | — | — | — |
+| `gpt-5.4` | — | — | — |
+| `gpt-4.1` | — | — | — |
+
+### API Cost (10,000 samples)
+
+| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 |
+|-------|-----------|------------|-------------|
+| `gpt-5-mini` | — | — | — |
+| `gpt-5.4` | — | — | — |
+| `gpt-4.1` | — | — | — |
 
 Few-Shot-5 and Few-Shot-10 refer to prompts with 5 and 10 labelled examples respectively.
 
@@ -44,8 +53,8 @@ python run.py --step infer --mode few_shot_10
 python run.py --step evaluate
 
 # Options
-python run.py --n_samples 500   # adjust sample size
-python run.py --model gpt-4o    # change model
+python run.py --n_samples 500                                    # adjust sample size
+python run.py --models gpt-5-mini gpt-5.4 gpt-4.1            # compare multiple models
 ```
 
 ## Project Structure
@@ -72,34 +81,30 @@ LLM/
 
 ## Model & Configuration
 
-### Model — GPT-4o-mini
-
-`gpt-4o-mini` was chosen as the default model for the following reasons:
-
-- **Cost-efficient**: significantly cheaper than GPT-4o while retaining strong instruction-following ability
-- **Fast**: low latency makes it practical for batch inference over hundreds of samples
-- **Sufficient capability**: classification tasks with structured output constraints do not require the full capacity of larger models
-
-Alternative models can be used via the `--model` flag:
+### Models
 
 | Model | Notes |
 |-------|-------|
-| `gpt-4o-mini` | Default — best cost/performance balance |
-| `gpt-4o` | Higher accuracy, higher cost |
-| `gpt-4-turbo` | Strong reasoning, higher cost |
+| `gpt-5-mini` | Default — cost-efficient, fast |
+| `gpt-5.4` | Higher accuracy than gpt-5-mini |
+| `gpt-4.1` | Latest GPT-4 series, high capability |
 
 ```bash
-python run.py --model gpt-4o
+# Single model
+python run.py --models gpt-5.4
+
+# Compare all models in one run
+python run.py --models gpt-5-mini gpt-5.4 gpt-4.1
 ```
 
-### Temperature — 0
+### Temperature
 
-`temperature=0` was set to make outputs **fully deterministic**. Since this task requires the model to output a fixed set of labels in a consistent format, randomness is undesirable — the same comment should always produce the same prediction, ensuring reproducible evaluation results.
+`temperature=0` is set for models that support it (e.g., `gpt-4.1`) to make outputs **fully deterministic** — the same comment always produces the same prediction, ensuring reproducible evaluation results.
 
-Raising the temperature (e.g., `0.5`–`1.0`) would introduce variability in outputs, which could degrade parsing reliability and make results non-reproducible. To change it, edit `src/inference.py:43`.
+GPT-5 series models (`gpt-5-mini`, `gpt-5.4`) do not support `temperature=0`; the parameter is omitted for these models (default: 1). See `src/inference.py` for details.
 
 ## Tech Stack
 
-- **LLM**: GPT-4o-mini (OpenAI API)
+- **LLM**: GPT-5-mini / GPT-5.4 / GPT-4.1 (OpenAI API)
 - **Data**: pandas
 - **Evaluation**: scikit-learn
