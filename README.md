@@ -8,23 +8,23 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 
 ### Micro F1 by Model × Prompting Mode
 
-| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 |
-|-------|-----------|------------|-------------|
-| `toxic-bert` *(fine-tuned baseline)* | — | N/A | N/A |
-| `unbiased-toxic-roberta` *(fine-tuned baseline)* | — | N/A | N/A |
-| `gpt-5-mini` | — | — | — |
-| `gpt-5.4` | — | — | — |
-| `gpt-4.1` | — | — | — |
+| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
+|-------|-----------|------------|-------------|------------------|-------------------|
+| `toxic-bert` *(fine-tuned baseline)* | — | N/A | N/A | N/A | N/A |
+| `unbiased-toxic-roberta` *(fine-tuned baseline)* | — | N/A | N/A | N/A | N/A |
+| `gpt-5-mini` | — | — | — | — | — |
+| `gpt-5.4` | — | — | — | — | — |
+| `gpt-4.1` | — | — | — | — | — |
 
 ### API Cost (10,000 samples)
 
-| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 |
-|-------|-----------|------------|-------------|
-| `gpt-5-mini` | — | — | — |
-| `gpt-5.4` | — | — | — |
-| `gpt-4.1` | — | — | — |
+| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
+|-------|-----------|------------|-------------|------------------|-------------------|
+| `gpt-5-mini` | — | — | — | — | — |
+| `gpt-5.4` | — | — | — | — | — |
+| `gpt-4.1` | — | — | — | — | — |
 
-Few-Shot-5 and Few-Shot-10 refer to prompts with 5 and 10 labelled examples respectively.
+Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Synth use LLM-generated synthetic examples (no real data in the prompt).
 
 ## Setup
 
@@ -50,6 +50,8 @@ python run.py --step preprocess --n_samples 10000
 python run.py --step infer --mode zero_shot
 python run.py --step infer --mode few_shot_5
 python run.py --step infer --mode few_shot_10
+python run.py --step infer --mode few_shot_5_synth
+python run.py --step infer --mode few_shot_10_synth
 python run.py --step evaluate
 
 # Options
