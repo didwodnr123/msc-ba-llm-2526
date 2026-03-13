@@ -45,18 +45,19 @@ cp .env.example .env
 # Full pipeline (preprocess → infer → evaluate)
 python run.py
 
-# Step by step
-python run.py --step preprocess --n_samples 10000
-python run.py --step infer --mode zero_shot
+# Step by step (leakage-free evaluation on test set)
+python run.py --step preprocess --dataset test --n_samples 10000
+python run.py --step infer --mode zero_shot                      # default: gpt-4.1
 python run.py --step infer --mode few_shot_5
 python run.py --step infer --mode few_shot_10
 python run.py --step infer --mode few_shot_5_synth
 python run.py --step infer --mode few_shot_10_synth
+python run.py --step detoxify                                    # fine-tuned BERT baselines
 python run.py --step evaluate
 
 # Options
 python run.py --n_samples 500                                    # adjust sample size
-python run.py --models gpt-5-mini gpt-5.4 gpt-4.1            # compare multiple models
+python run.py --models gpt-4.1 gpt-5-mini gpt-5.4              # compare multiple models
 ```
 
 ## Project Structure
@@ -64,16 +65,20 @@ python run.py --models gpt-5-mini gpt-5.4 gpt-4.1            # compare multiple 
 ```
 LLM/
 ├── src/
-│   ├── preprocess.py   # Text cleaning and stratified sampling
-│   ├── prompts.py      # Zero-shot / few-shot prompt templates
-│   ├── inference.py    # OpenAI API batch inference
-│   └── evaluate.py     # Multi-label classification metrics
+│   ├── preprocess.py          # Text cleaning and stratified sampling
+│   ├── prompts.py             # Zero-shot / few-shot prompt templates
+│   ├── inference.py           # OpenAI API batch inference
+│   ├── detoxify_inference.py  # Fine-tuned BERT/RoBERTa baselines
+│   ├── build_few_shot.py      # Few-shot example builder (real + synthetic)
+│   └── evaluate.py            # Multi-label classification metrics
 ├── data/
-│   └── train.csv       # Jigsaw dataset (~159K comments)
-├── results/            # Prediction CSVs and evaluation summary
+│   ├── train.csv              # Jigsaw training set (~159K comments)
+│   ├── test.csv               # Jigsaw test set (~153K comments)
+│   └── test_labels.csv        # Test labels (~63K labelled rows)
+├── results/                   # Prediction CSVs and evaluation summary
 ├── report/
-│   └── report.md       # Full project report
-├── run.py              # Pipeline entry point
+│   └── report.md              # Full project report
+├── run.py                     # Pipeline entry point
 └── requirements.txt
 ```
 
@@ -92,11 +97,11 @@ LLM/
 | `gpt-5.4` | Higher accuracy than gpt-5-mini |
 
 ```bash
-# Single model
-python run.py --models gpt-5.4
+# Single model (default)
+python run.py --models gpt-4.1
 
 # Compare all models in one run
-python run.py --models gpt-5-mini gpt-5.4 gpt-4.1
+python run.py --models gpt-4.1 gpt-5-mini gpt-5.4
 ```
 
 ### Temperature
@@ -107,6 +112,6 @@ GPT-5 series models (`gpt-5-mini`, `gpt-5.4`) do not support `temperature=0`; th
 
 ## Tech Stack
 
-- **LLM**: GPT-5-mini / GPT-5.4 / GPT-4.1 (OpenAI API)
+- **LLM**: GPT-4.1 / GPT-5-mini / GPT-5.4 (OpenAI API)
 - **Data**: pandas
 - **Evaluation**: scikit-learn
