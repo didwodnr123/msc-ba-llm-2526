@@ -39,6 +39,37 @@ Estimated from OpenAI list prices (Mar 2026): gpt-4.1 $1.25/$10.00 per 1M tokens
 
 Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Synth use LLM-generated synthetic examples (no real data in the prompt).
 
+## Discussion
+
+### Key Findings
+
+**Few-shot prompting significantly improves recall.**
+`gpt-4.1` zero-shot achieves a Micro F1 of 0.563, rising to 0.758 with Few-Shot-10 — a 35% relative improvement. The gain is driven primarily by recall (0.518 → 0.866): in-context examples encourage the model to predict toxic labels more actively rather than defaulting to safe, conservative outputs.
+
+**Synthetic few-shot examples are competitive with real ones.**
+`gpt-4.1` Few-Shot-10-Synth (0.763) marginally outperforms Few-Shot-10 using real labelled examples (0.758). This suggests that well-constructed synthetic examples can substitute for real annotated data in the prompt — useful when labelled data is scarce or costly to curate.
+
+**`gpt-5.4` has a strong zero-shot baseline.**
+Its zero-shot Micro F1 (0.751) is comparable to `gpt-4.1` Few-Shot-10 (0.758), suggesting the model has internalised stronger toxicity-detection priors. Consequently, few-shot prompting yields smaller marginal gains for `gpt-5.4` than for `gpt-4.1`.
+
+**`gpt-5-mini` exhibits a near-zero recall failure.**
+Micro recall ranges from 0.018 to 0.116 — the model classifies almost all comments as non-toxic. Notably, Few-Shot-10 (0.067) performs *worse* than Few-Shot-5 (0.202), suggesting that longer contexts confuse the model rather than helping it. This makes `gpt-5-mini` unsuitable for this task without further prompt tuning.
+
+**Fine-tuned models retain a clear performance advantage.**
+The best LLM result (`gpt-5.4` Few-Shot-10-Synth: 0.789) still trails `toxic-bert` (0.883) by ~10 percentage points. The gap is most pronounced on rare labels: LLMs produce near-zero F1 on `severe_toxic` and `threat`, whereas `toxic-bert` achieves 0.444 and 0.667 respectively.
+
+### Future Improvements
+
+**Address `gpt-5-mini`'s recall collapse.** The prompt could include an explicit instruction to err on the side of labelling (e.g. *"if in doubt, assign the label"*), or the model's output probabilities could be used to lower the effective classification threshold.
+
+**Explore Chain-of-Thought (CoT) prompting.** Adding a reasoning step before the final label decision may help with ambiguous boundary cases, particularly for `severe_toxic` and `threat` where even fine-tuned models struggle.
+
+**Fine-tune `gpt-4.1` on the Jigsaw training set.** OpenAI's fine-tuning API supports `gpt-4.1`; supervised fine-tuning on toxic comments could close the ~10% gap to specialised BERT models. (Fine-tuning support for the gpt-5 series is currently unconfirmed.)
+
+**Improve few-shot example selection.** The current strategy selects fixed examples covering 10 predefined label combinations. A confusion-matrix-guided approach — selecting examples that target the model's observed error patterns — could yield more targeted improvements.
+
+**Optimise per-label thresholds for fine-tuned models.** `toxic-bert` and `unbiased-toxic-roberta` currently use a fixed threshold of 0.5 for all labels. Tuning thresholds individually on a held-out validation set could improve F1, especially for rare labels with skewed probability distributions.
+
 ## Experimental Setup
 
 ### Dataset & Sampling
