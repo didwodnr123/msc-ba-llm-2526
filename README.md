@@ -8,23 +8,74 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 
 ### Micro F1 by Model × Prompting Mode
 
-| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
-|-------|-----------|------------|-------------|------------------|-------------------|
-| `toxic-bert` *(fine-tuned)* | — | N/A | N/A | N/A | N/A |
-| `unbiased-toxic-roberta` *(fine-tuned)* | — | N/A | N/A | N/A | N/A |
-| `gpt-5-mini` | — | — | — | — | — |
-| `gpt-5.4` | — | — | — | — | — |
-| `gpt-4.1` *(baseline)* | — | — | — | — | — |
-
-### API Cost (10,000 samples)
+**LLM prompt-engineering** (`gpt-4.1` zero-shot = baseline):
 
 | Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
 |-------|-----------|------------|-------------|------------------|-------------------|
-| `gpt-5-mini` | — | — | — | — | — |
-| `gpt-5.4` | — | — | — | — | — |
-| `gpt-4.1` | — | — | — | — | — |
+| `gpt-4.1` *(baseline)* | 0.563 | 0.718 | 0.758 | 0.750 | 0.763 |
+| `gpt-5-mini` | 0.034 | 0.202 | 0.067 | 0.143 | 0.148 |
+| `gpt-5.4` | 0.751 | 0.767 | 0.755 | 0.774 | **0.789** |
+
+**Fine-tuned upper bound** (no prompting — direct inference with threshold=0.5):
+
+| Model | Micro F1 |
+|-------|----------|
+| `toxic-bert` | **0.883** |
+| `unbiased-toxic-roberta` | 0.831 |
+
+### Estimated API Cost (10,000 samples)
+
+Estimated from OpenAI list prices (Mar 2026): gpt-4.1 $1.25/$10.00 per 1M tokens in/out, gpt-5-mini $0.25/$2.00, gpt-5.4 $2.50/$15.00.
+
+| Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
+|-------|-----------|------------|-------------|------------------|-------------------|
+| `gpt-4.1` | $3.01 | $4.93 | $6.83 | $4.42 | $5.85 |
+| `gpt-5-mini` | $0.60 | $0.99 | $1.36 | $0.88 | $1.17 |
+| `gpt-5.4` | $5.52 | $9.37 | $13.15 | $8.34 | $11.19 |
 
 Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Synth use LLM-generated synthetic examples (no real data in the prompt).
+
+## Experimental Setup
+
+### Dataset & Sampling
+
+- **Source**: Jigsaw test set (`data/test.csv` + `data/test_labels.csv`)
+- Unlabelled rows (`toxic == -1`) excluded before sampling
+- **Stratified sampling**: 5,000 toxic / 5,000 non-toxic (random_state=42)
+- "Toxic" defined as having at least one positive label across the 6 categories
+- **Text cleaning**: HTML tag removal and whitespace normalization
+
+### Few-Shot Example Selection
+
+- Examples drawn from the **training set only** — no overlap with the evaluation set (leakage-free)
+- 10 target label combinations selected to cover diverse toxicity patterns (clean, single-label, and multi-label cases)
+- Short comments preferred (≤150 chars) to keep prompt length manageable
+- **Synth variants**: hardcoded LLM-generated examples — no real training data in the prompt
+
+### Inference Configuration
+
+| Parameter | Value |
+|-----------|-------|
+| Max completion tokens | 200 |
+| Temperature | 0 for `gpt-4.1` (deterministic); not supported by gpt-5 series (default=1, non-deterministic) |
+| Parallel requests | 4 threads (ThreadPoolExecutor) |
+| Retry on failure | Exponential backoff, up to 3 attempts |
+
+> **Note**: gpt-5 series results may vary slightly across runs due to non-deterministic sampling.
+
+### Fine-Tuned Model Configuration
+
+- **Library**: [`detoxify`](https://github.com/unitaryai/detoxify)
+- **Binary threshold**: 0.5 (probability → 0/1 label)
+- **Batch size**: 256
+
+### Evaluation Metrics
+
+- **Micro F1** *(primary)*: aggregates TP/FP/FN across all labels and samples — reflects overall classification performance
+- **Macro F1**: per-label F1 averaged unweighted — sensitive to performance on rare labels
+- **Exact Match Accuracy**: fraction of samples where all 6 labels are simultaneously correct
+- Per-label precision/recall/F1 available in `results/evaluation_summary.csv`
+- Undefined precision/recall treated as 0 (`zero_division=0`)
 
 ## Setup
 
@@ -115,3 +166,24 @@ GPT-5 series models (`gpt-5-mini`, `gpt-5.4`) do not support `temperature=0`; th
 - **LLM**: GPT-4.1 / GPT-5-mini / GPT-5.4 (OpenAI API)
 - **Data**: pandas
 - **Evaluation**: scikit-learn
+
+## Vibe Coding Notes
+
+This project was developed using **VSCode + Claude Code** with active use of AI-assisted coding. The following are practical lessons learned during the process.
+
+**Context management**
+- Token usage per session must be managed carefully — hitting the context limit forces an unexpected pause
+- Use `/compact` periodically to summarise and compress the conversation; without it, the context grows long and responses slow down
+- Use `/clear` when switching to a different task or topic to start fresh
+
+**Giving clear instructions**
+- The AI performs well only when instructions are explicit — anything left unspecified simply won't be done
+- Good documentation and clear upfront instructions are essential; vague prompts produce vague code
+
+**Plan before coding**
+- Use `/plan` before asking for code to produce a detailed implementation plan first
+- This reduces the chance of the AI making incorrect assumptions and having to rewrite large chunks
+
+**Test small before running full inference**
+- If something is wrong after a full 10,000-sample inference run, you have to re-run it — wasting both time and API budget
+- Always test on a small sample (e.g., 10–50 inputs) first: verify the API works, the code runs, and the outputs look correct before scaling up
