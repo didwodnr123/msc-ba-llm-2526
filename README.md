@@ -23,6 +23,9 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 | `toxic-bert` | **0.883** |
 | `unbiased-toxic-roberta` | 0.831 |
 
+<br>
+Per-label precision/recall/F1 available in [`results/evaluation_summary.md`](results/evaluation_summary.md)
+
 ### Estimated API Cost (10,000 samples)
 
 Estimated from OpenAI list prices (Mar 2026): gpt-4.1 $1.25/$10.00 per 1M tokens in/out, gpt-5-mini $0.25/$2.00, gpt-5.4 $2.50/$15.00.
@@ -74,7 +77,6 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 - **Micro F1** *(primary)*: aggregates TP/FP/FN across all labels and samples — reflects overall classification performance
 - **Macro F1**: per-label F1 averaged unweighted — sensitive to performance on rare labels
 - **Exact Match Accuracy**: fraction of samples where all 6 labels are simultaneously correct
-- Per-label precision/recall/F1 available in [`results/evaluation_summary.md`](results/evaluation_summary.md)
 - Undefined precision/recall treated as 0 (`zero_division=0`)
 
 ## Setup
