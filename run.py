@@ -31,7 +31,7 @@ def main():
     parser.add_argument('--step',      choices=['preprocess', 'infer', 'detoxify', 'evaluate', 'all'], default='all')
     parser.add_argument('--mode',      choices=['zero_shot', 'few_shot_5', 'few_shot_10', 'few_shot_5_synth', 'few_shot_10_synth', 'all'], default='all')
     parser.add_argument('--n_samples', type=int, default=10000,      help='Number of samples to evaluate')
-    parser.add_argument('--models',    nargs='+', default=['gpt-4o-mini'], help='One or more OpenAI model names')
+    parser.add_argument('--models',    nargs='+', default=['gpt-4.1'], help='One or more OpenAI model names')
     parser.add_argument('--workers',   type=int, default=4,          help='Number of concurrent API requests')
     parser.add_argument('--dataset',   choices=['train', 'test'], default='train',
                         help='train = sample from train.csv (default); test = use test.csv + test_labels.csv')

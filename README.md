@@ -87,9 +87,9 @@ LLM/
 
 | Model | Notes |
 |-------|-------|
-| `gpt-5-mini` | Default — cost-efficient, fast |
+| `gpt-4.1` | **Default** — latest GPT-4 series, high capability |
+| `gpt-5-mini` | Cost-efficient, fast |
 | `gpt-5.4` | Higher accuracy than gpt-5-mini |
-| `gpt-4.1` | Latest GPT-4 series, high capability |
 
 ```bash
 # Single model
