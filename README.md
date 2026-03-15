@@ -66,7 +66,7 @@ The best LLM result (`gpt-5.4` Few-Shot-10-Synth: 0.789) still trails `toxic-ber
 
 **Fine-tune `gpt-4.1` on the Jigsaw training set.** OpenAI's fine-tuning API supports `gpt-4.1`; supervised fine-tuning on toxic comments could close the ~10% gap to specialised BERT models. (Fine-tuning support for the gpt-5 series is currently unconfirmed.)
 
-**Improve few-shot example selection.** The current strategy selects fixed examples covering 10 predefined label combinations. A confusion-matrix-guided approach — selecting examples that target the model's observed error patterns — could yield more targeted improvements.
+**Improve few-shot example selection.** The current strategy selects fixed examples covering 10 predefined label combinations. A confusion-matrix-guided adaptive approach — selecting examples that target the model's observed error patterns — could yield more targeted improvements.
 
 **Optimise per-label thresholds for fine-tuned models.** `toxic-bert` and `unbiased-toxic-roberta` currently use a fixed threshold of 0.5 for all labels. Tuning thresholds individually on a held-out validation set could improve F1, especially for rare labels with skewed probability distributions.
 
