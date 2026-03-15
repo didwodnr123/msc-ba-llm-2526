@@ -46,22 +46,22 @@ def call_llm(
                     {'role': 'system', 'content': system},
                     {'role': 'user',   'content': user},
                 ],
-                'max_completion_tokens': 200,
+                'max_completion_tokens': 30,
             }
             # GPT-5+ models only support the default temperature (1); omit for them
             if not model.startswith('gpt-5'):
                 kwargs['temperature'] = 0
-            resp = client.chat.completions.create(**kwargs)
+            resp = client.chat.completions.create(**kwargs, timeout=30)
             text = resp.choices[0].message.content or ''
             cost = openai_prompt_cost(model, user, text, resp).get('total_cost', 0.0)
             return text, cost
         except Exception as e:
             if attempt < max_retries - 1:
                 wait = 2 ** attempt
-                print(f"  API error (retry {attempt+1}/{max_retries}): {e} — waiting {wait}s")
+                print(f"  API error (retry {attempt+1}/{max_retries}): {e} — waiting {wait}s", flush=True)
                 time.sleep(wait)
             else:
-                print(f"  API error (final failure): {e}")
+                print(f"  API error (final failure): {e}", flush=True)
                 return '', 0.0
     return '', 0.0
 
@@ -119,7 +119,7 @@ def run_inference(
 
             completed += 1
             if completed % 50 == 0 or completed == total:
-                print(f"  Progress: {completed}/{total}")
+                print(f"  Progress: {completed}/{total}", flush=True)
 
     print(f"  Estimated cost: ${total_cost:.6f} USD")
     records = [records_map[i] for i in sorted(records_map)]

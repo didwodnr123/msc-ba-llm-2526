@@ -50,7 +50,7 @@ _SYNTHETIC_FEW_SHOT_EXAMPLES = [
     {"comment": "I know where you live. You better watch your back.",      "labels": "toxic, threat"},
     {"comment": "This is absolute garbage!! You disgusting piece of filth!!", "labels": "toxic, severe_toxic, obscene, insult"},
     {"comment": "Go back to your country, you don't belong here.",         "labels": "toxic, identity_hate"},
-    {"comment": "Thank you for the clarification. I appreciate your help.", "labels": "none"},
+    {"comment": "It was fucking cool", "labels": "none"},
     # ── Additional 5 examples (used in 10-example set only) ────────────────
     {"comment": "I will find you and make you pay for this.",              "labels": "toxic, threat"},
     {"comment": "Your kind has no place in civilised society.",            "labels": "toxic, identity_hate"},

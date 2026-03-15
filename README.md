@@ -12,16 +12,16 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 
 | Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
 |-------|-----------|------------|-------------|------------------|-------------------|
-| `gpt-4.1` *(baseline)* | 0.563 | 0.718 | 0.758 | 0.750 | 0.763 |
-| `gpt-5-mini` | 0.034 | 0.202 | 0.067 | 0.143 | 0.148 |
-| `gpt-5.4` | 0.751 | 0.767 | 0.755 | 0.774 | **0.789** |
+| `gpt-4.1` *(baseline)* | 0.575 | 0.724 | 0.712 | **0.728** | 0.727 |
+| `gpt-5-mini` | 0.077 | 0.259 | 0.000 | 0.083 | 0.000 |
+| `gpt-5.4` | 0.717 | **0.753** | 0.710 | 0.732 | 0.741 |
 
 **Fine-tuned upper bound** (no prompting — direct inference with threshold=0.5):
 
 | Model | Micro F1 |
 |-------|----------|
-| `toxic-bert` | **0.883** |
-| `unbiased-toxic-roberta` | 0.831 |
+| `toxic-bert` | **0.823** |
+| `unbiased-toxic-roberta` | *(pending)* |
 
 Micro F1 is used as the primary metric because it aggregates TP/FP/FN across all labels and samples, reflecting overall system performance under label imbalance — where labels like `threat` and `identity_hate` are far rarer than `toxic`. Macro F1 and Exact Match Accuracy are reported as supplementary metrics.
 
@@ -44,19 +44,19 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 ### Key Findings
 
 **Few-shot prompting significantly improves recall.**
-`gpt-4.1` zero-shot achieves a Micro F1 of 0.563, rising to 0.758 with Few-Shot-10 — a 35% relative improvement. The gain is driven primarily by recall (0.518 → 0.866): in-context examples encourage the model to predict toxic labels more actively rather than defaulting to safe, conservative outputs.
+`gpt-4.1` zero-shot achieves a Micro F1 of 0.575, rising to 0.728 with Few-Shot-5-Synth — a 27% relative improvement. The gain is driven primarily by recall (0.522 → 0.772): in-context examples encourage the model to predict toxic labels more actively rather than defaulting to safe, conservative outputs.
 
 **Synthetic few-shot examples are competitive with real ones.**
-`gpt-4.1` Few-Shot-10-Synth (0.763) marginally outperforms Few-Shot-10 using real labelled examples (0.758). This suggests that well-constructed synthetic examples can substitute for real annotated data in the prompt — useful when labelled data is scarce or costly to curate.
+`gpt-4.1` Few-Shot-5-Synth (0.728) outperforms Few-Shot-5 using real labelled examples (0.724) and Few-Shot-10 (0.712). This suggests that well-constructed synthetic examples can substitute for real annotated data in the prompt — useful when labelled data is scarce or costly to curate.
 
 **`gpt-5.4` has a strong zero-shot baseline.**
-Its zero-shot Micro F1 (0.751) is comparable to `gpt-4.1` Few-Shot-10 (0.758), suggesting the model has internalised stronger toxicity-detection priors. Consequently, few-shot prompting yields smaller marginal gains for `gpt-5.4` than for `gpt-4.1`.
+Its zero-shot Micro F1 (0.717) is comparable to `gpt-4.1` Few-Shot-5 (0.724), suggesting the model has internalised stronger toxicity-detection priors. Consequently, few-shot prompting yields smaller marginal gains for `gpt-5.4` than for `gpt-4.1`.
 
-**`gpt-5-mini` exhibits a near-zero recall failure.**
-Micro recall ranges from 0.018 to 0.116 — the model classifies almost all comments as non-toxic. Notably, Few-Shot-10 (0.067) performs *worse* than Few-Shot-5 (0.202), suggesting that longer contexts confuse the model rather than helping it. This makes `gpt-5-mini` unsuitable for this task without further prompt tuning.
+**`gpt-5-mini` exhibits a severe recall failure.**
+Micro recall is near-zero across most modes — the model classifies almost all comments as non-toxic. Notably, Few-Shot-10 (0.000) collapses entirely while Few-Shot-5 (0.259) remains partly functional, suggesting that longer contexts confuse the model rather than helping it. This makes `gpt-5-mini` unsuitable for this task without further prompt tuning.
 
 **Fine-tuned models retain a clear performance advantage.**
-The best LLM result (`gpt-5.4` Few-Shot-10-Synth: 0.789) still trails `toxic-bert` (0.883) by ~10 percentage points. The gap is most pronounced on rare labels: LLMs produce near-zero F1 on `severe_toxic` and `threat`, whereas `toxic-bert` achieves 0.444 and 0.667 respectively.
+The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `toxic-bert` (0.823) by ~7 percentage points. The gap is most pronounced on rare labels: LLMs produce low F1 on `severe_toxic` and `threat`, whereas `toxic-bert` achieves 0.451 and 0.593 respectively.
 
 ### Future Improvements
 
@@ -99,7 +99,7 @@ The best LLM result (`gpt-5.4` Few-Shot-10-Synth: 0.789) still trails `toxic-ber
 
 | Parameter | Value |
 |-----------|-------|
-| Max completion tokens | 200 |
+| Max completion tokens | 30 |
 | Temperature | 0 for `gpt-4.1` (deterministic); not supported by gpt-5 series (default=1, non-deterministic) |
 | Parallel requests | 4 threads (ThreadPoolExecutor) |
 | Retry on failure | Exponential backoff, up to 3 attempts |
