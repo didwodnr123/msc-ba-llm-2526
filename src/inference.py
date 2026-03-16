@@ -22,9 +22,27 @@ from src.prompts import (
 )
 
 load_dotenv()
-client = OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
-from genai_pricing import openai_prompt_cost
+try:
+    from genai_pricing import openai_prompt_cost
+    _PRICING_AVAILABLE = True
+except ImportError:
+    _PRICING_AVAILABLE = False
+
+
+def _get_client(model: str) -> OpenAI:
+    """Return the appropriate OpenAI-compatible client based on model name."""
+    if model.startswith('gemini'):
+        return OpenAI(
+            api_key=os.environ.get('GEMINI_API_KEY'),
+            base_url='https://generativelanguage.googleapis.com/v1beta/openai/',
+        )
+    if any(model.startswith(p) for p in ('llama', 'mixtral', 'gemma', 'qwen', 'deepseek', 'whisper')):
+        return OpenAI(
+            api_key=os.environ.get('GROQ_API_KEY'),
+            base_url='https://api.groq.com/openai/v1',
+        )
+    return OpenAI(api_key=os.environ.get('OPENAI_API_KEY'))
 
 
 def call_llm(
@@ -38,6 +56,7 @@ def call_llm(
     Returns:
         (response_text, cost_usd)
     """
+    client = _get_client(model)
     for attempt in range(max_retries):
         try:
             kwargs: dict = {
@@ -53,7 +72,12 @@ def call_llm(
                 kwargs['temperature'] = 0
             resp = client.chat.completions.create(**kwargs, timeout=30)
             text = resp.choices[0].message.content or ''
-            cost = openai_prompt_cost(model, user, text, resp).get('total_cost', 0.0)
+            cost = 0.0
+            if _PRICING_AVAILABLE:
+                try:
+                    cost = openai_prompt_cost(model, user, text, resp).get('total_cost', 0.0)
+                except Exception:
+                    pass
             return text, cost
         except Exception as e:
             if attempt < max_retries - 1:
