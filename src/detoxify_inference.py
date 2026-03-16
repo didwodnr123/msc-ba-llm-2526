@@ -28,7 +28,7 @@ def run_detoxify(
     df: pd.DataFrame,
     model_name: str = 'toxic-bert',
     threshold: float = 0.5,
-    batch_size: int = 256,
+    batch_size: int = 32,
 ) -> pd.DataFrame:
     """
     Run a detoxify model on a DataFrame of comments.
@@ -59,8 +59,8 @@ def run_detoxify(
             all_scores[key].extend(vals.tolist() if hasattr(vals, 'tolist') else list(vals))
 
         done = min(start + batch_size, total)
-        if done % 500 == 0 or done == total:
-            print(f"  Progress: {done}/{total}")
+        if done % 100 == 0 or done == total:
+            print(f"  Progress: {done}/{total}", flush=True)
 
     records = []
     for i, row_id in enumerate(df['id']):

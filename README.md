@@ -20,8 +20,8 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 
 | Model | Micro F1 |
 |-------|----------|
-| `toxic-bert` | **0.823** |
-| `unbiased-toxic-roberta` | *(pending)* |
+| `toxic-bert` | 0.823 |
+| `unbiased-toxic-roberta` | **0.834** |
 
 Micro F1 is used as the primary metric because it aggregates TP/FP/FN across all labels and samples, reflecting overall system performance under label imbalance — where labels like `threat` and `identity_hate` are far rarer than `toxic`. Macro F1 and Exact Match Accuracy are reported as supplementary metrics.
 
@@ -56,7 +56,7 @@ Its zero-shot Micro F1 (0.717) is comparable to `gpt-4.1` Few-Shot-5 (0.724), su
 Micro recall is near-zero across most modes — the model classifies almost all comments as non-toxic. Notably, Few-Shot-10 (0.000) collapses entirely while Few-Shot-5 (0.259) remains partly functional, suggesting that longer contexts confuse the model rather than helping it. This makes `gpt-5-mini` unsuitable for this task without further prompt tuning.
 
 **Fine-tuned models retain a clear performance advantage.**
-The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `toxic-bert` (0.823) by ~7 percentage points. The gap is most pronounced on rare labels: LLMs produce low F1 on `severe_toxic` and `threat`, whereas `toxic-bert` achieves 0.451 and 0.593 respectively.
+The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `unbiased-toxic-roberta` (0.834) by ~8 percentage points. The gap is most pronounced on rare labels: LLMs produce low F1 on `severe_toxic` and `threat`, whereas `unbiased-toxic-roberta` achieves 0.435 and 0.570 respectively. `unbiased-toxic-roberta` (0.834) outperforms `toxic-bert` (0.823) overall, driven by stronger recall on the `toxic` label (0.959 vs 0.909).
 
 ### Future Improvements
 

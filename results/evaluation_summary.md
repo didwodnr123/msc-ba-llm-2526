@@ -23,9 +23,8 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-10 | 0.556 | 0.741 | 0.680 | 0.710 | 0.619 |
 | `gpt-5.4` | Few-Shot-5-Synth | 0.589 | 0.734 | 0.730 | 0.732 | 0.635 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.595 | 0.725 | 0.759 | 0.741 | 0.644 |
-| `toxic-bert` | Detoxify | 0.682 | 0.799 | 0.849 | **0.823** | 0.709 |
-
-> `unbiased-toxic-roberta` results pending (inference incomplete).
+| `toxic-bert` | Detoxify | 0.682 | 0.799 | 0.849 | 0.823 | 0.709 |
+| `unbiased-toxic-roberta` | Detoxify | 0.692 | 0.803 | 0.868 | **0.834** | 0.708 |
 
 ---
 
@@ -48,7 +47,8 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-10 | 0.757 | 0.392 | 0.700 | 0.461 | 0.706 | 0.699 |
 | `gpt-5.4` | Few-Shot-5-Synth | 0.793 | 0.421 | 0.722 | 0.483 | 0.727 | 0.665 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.802 | 0.441 | 0.754 | 0.467 | 0.727 | 0.672 |
-| `toxic-bert` | Detoxify | **0.906** | 0.451 | **0.819** | **0.593** | **0.774** | **0.709** |
+| `toxic-bert` | Detoxify | 0.906 | **0.451** | **0.819** | **0.593** | 0.774 | 0.709 |
+| `unbiased-toxic-roberta` | Detoxify | **0.919** | 0.435 | 0.817 | 0.570 | **0.780** | **0.726** |
 
 ---
 
@@ -73,7 +73,8 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-10 | 0.881 | 0.664 | 0.757 |
 | `gpt-5.4` | Few-Shot-5-Synth | 0.875 | 0.725 | 0.793 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.871 | 0.742 | 0.802 |
-| `toxic-bert` | Detoxify | 0.903 | 0.909 | **0.906** |
+| `toxic-bert` | Detoxify | 0.903 | 0.909 | 0.906 |
+| `unbiased-toxic-roberta` | Detoxify | 0.882 | 0.959 | **0.919** |
 
 ### severe\_toxic
 
@@ -95,6 +96,7 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-5-Synth | 0.377 | 0.477 | 0.421 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.340 | 0.627 | 0.441 |
 | `toxic-bert` | Detoxify | 0.385 | 0.546 | **0.451** |
+| `unbiased-toxic-roberta` | Detoxify | 0.516 | 0.376 | 0.435 |
 
 ### obscene
 
@@ -116,6 +118,7 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-5-Synth | 0.796 | 0.661 | 0.722 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.776 | 0.734 | 0.754 |
 | `toxic-bert` | Detoxify | 0.774 | 0.870 | **0.819** |
+| `unbiased-toxic-roberta` | Detoxify | 0.801 | 0.833 | 0.817 |
 
 ### threat
 
@@ -137,6 +140,7 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-5-Synth | 0.336 | 0.859 | 0.483 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.318 | 0.877 | 0.467 |
 | `toxic-bert` | Detoxify | 0.468 | 0.810 | **0.593** |
+| `unbiased-toxic-roberta` | Detoxify | 0.563 | 0.577 | 0.570 |
 
 ### insult
 
@@ -157,7 +161,8 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-10 | 0.662 | 0.755 | 0.706 |
 | `gpt-5.4` | Few-Shot-5-Synth | 0.650 | 0.825 | 0.727 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.660 | 0.808 | 0.727 |
-| `toxic-bert` | Detoxify | 0.764 | 0.785 | **0.774** |
+| `toxic-bert` | Detoxify | 0.764 | 0.785 | 0.774 |
+| `unbiased-toxic-roberta` | Detoxify | 0.722 | 0.848 | **0.780** |
 
 ### identity\_hate
 
@@ -178,4 +183,5 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-5.4` | Few-Shot-10 | 0.601 | 0.836 | 0.699 |
 | `gpt-5.4` | Few-Shot-5-Synth | 0.580 | 0.778 | 0.665 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.565 | 0.828 | 0.672 |
-| `toxic-bert` | Detoxify | 0.700 | 0.719 | **0.709** |
+| `toxic-bert` | Detoxify | 0.700 | 0.719 | 0.709 |
+| `unbiased-toxic-roberta` | Detoxify | 0.732 | 0.721 | **0.726** |
