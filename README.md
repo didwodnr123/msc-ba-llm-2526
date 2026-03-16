@@ -77,8 +77,6 @@ The best LLM result (`gpt-4.1-mini` Few-Shot-5: 0.759) still trails `unbiased-to
 
 **Explore other reasoning models with corrected token limits.** The `gpt-5-mini` failure was caused by `max_completion_tokens=30` being exhausted by internal reasoning tokens. With a corrected budget (e.g. `max_completion_tokens=1000`), reasoning models may produce valid predictions — though the reasoning overhead still makes them slower and more expensive per request.
 
-**Explore Chain-of-Thought (CoT) prompting.** Adding a reasoning step before the final label decision may help with ambiguous boundary cases, particularly for `severe_toxic` and `threat` where even fine-tuned models struggle.
-
 **Fine-tune `gpt-4.1` on the Jigsaw training set.** OpenAI's fine-tuning API supports `gpt-4.1`; supervised fine-tuning on toxic comments could close the ~10% gap to specialised BERT models. (Fine-tuning support for the gpt-5 series is currently unconfirmed.)
 
 **Improve few-shot example selection.** The current strategy selects fixed examples covering 10 predefined label combinations. A confusion-matrix-guided adaptive approach — selecting examples that target the model's observed error patterns — could yield more targeted improvements.
