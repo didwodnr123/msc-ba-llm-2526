@@ -11,15 +11,15 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Zero-Shot *(baseline)* | 0.480 | 0.639 | 0.522 | 0.575 | 0.539 |
 | `gpt-4.1` | Few-Shot-5 | 0.564 | 0.701 | 0.749 | 0.724 | 0.616 |
 | `gpt-4.1` | Few-Shot-10 | 0.557 | 0.694 | 0.731 | 0.712 | 0.620 |
-| `gpt-4.1` | Few-Shot-5-Synth | 0.575 | 0.688 | 0.772 | **0.728** | 0.628 |
+| `gpt-4.1` | Few-Shot-5-Synth | 0.575 | 0.688 | 0.772 | 0.728 | 0.628 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.562 | 0.667 | 0.799 | 0.727 | 0.622 |
-| `gpt-5-mini` | Zero-Shot | 0.504 | 0.704 | 0.041 | 0.077 | 0.043 |
-| `gpt-5-mini` | Few-Shot-5 | 0.523 | 0.747 | 0.156 | 0.259 | 0.153 |
-| `gpt-5-mini` | Few-Shot-10 | 0.500 | 0.000 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.501 | 0.647 | 0.044 | 0.083 | 0.044 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.500 | 0.000 | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.568 | 0.677 | 0.813 | 0.739 | 0.615 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.594 | 0.719 | 0.803 | **0.759** | 0.614 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.578 | 0.688 | 0.780 | 0.731 | 0.628 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.581 | 0.684 | 0.817 | 0.745 | 0.638 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.563 | 0.656 | 0.839 | 0.736 | 0.624 |
 | `gpt-5.4` | Zero-Shot | 0.568 | 0.719 | 0.715 | 0.717 | 0.604 |
-| `gpt-5.4` | Few-Shot-5 | 0.592 | 0.745 | 0.760 | **0.753** | 0.608 |
+| `gpt-5.4` | Few-Shot-5 | 0.592 | 0.745 | 0.760 | 0.753 | 0.608 |
 | `gpt-5.4` | Few-Shot-10 | 0.556 | 0.741 | 0.680 | 0.710 | 0.619 |
 | `gpt-5.4` | Few-Shot-5-Synth | 0.589 | 0.734 | 0.730 | 0.732 | 0.635 |
 | `gpt-5.4` | Few-Shot-10-Synth | 0.595 | 0.725 | 0.759 | 0.741 | 0.644 |
@@ -37,11 +37,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.779 | 0.379 | 0.699 | 0.535 | 0.729 | 0.601 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.808 | 0.378 | 0.736 | 0.549 | 0.720 | 0.577 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.828 | 0.335 | 0.748 | 0.540 | 0.715 | 0.566 |
-| `gpt-5-mini` | Zero-Shot | 0.091 | 0.000 | 0.056 | 0.000 | 0.102 | 0.007 |
-| `gpt-5-mini` | Few-Shot-5 | 0.293 | 0.019 | 0.194 | 0.036 | 0.326 | 0.049 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.110 | 0.000 | 0.017 | 0.000 | 0.124 | 0.010 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.827 | 0.312 | 0.762 | 0.485 | 0.694 | 0.613 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.862 | 0.219 | 0.739 | 0.496 | 0.712 | 0.654 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.810 | 0.378 | 0.745 | 0.481 | 0.719 | 0.632 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.850 | 0.361 | 0.742 | 0.523 | 0.711 | 0.643 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.860 | 0.302 | 0.757 | 0.490 | 0.707 | 0.628 |
 | `gpt-5.4` | Zero-Shot | 0.727 | 0.249 | 0.760 | 0.475 | 0.727 | 0.685 |
 | `gpt-5.4` | Few-Shot-5 | 0.837 | 0.197 | 0.731 | 0.481 | 0.718 | 0.684 |
 | `gpt-5.4` | Few-Shot-10 | 0.757 | 0.392 | 0.700 | 0.461 | 0.706 | 0.699 |
@@ -63,11 +63,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.883 | 0.697 | 0.779 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.864 | 0.759 | 0.808 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.862 | 0.796 | 0.828 |
-| `gpt-5-mini` | Zero-Shot | 0.825 | 0.048 | 0.091 |
-| `gpt-5-mini` | Few-Shot-5 | 0.853 | 0.177 | 0.293 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.763 | 0.059 | 0.110 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.856 | 0.800 | 0.827 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.863 | 0.861 | 0.862 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.891 | 0.743 | 0.810 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.867 | 0.833 | 0.850 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.875 | 0.846 | 0.860 |
 | `gpt-5.4` | Zero-Shot | 0.912 | 0.604 | 0.727 |
 | `gpt-5.4` | Few-Shot-5 | 0.870 | 0.807 | 0.837 |
 | `gpt-5.4` | Few-Shot-10 | 0.881 | 0.664 | 0.757 |
@@ -85,11 +85,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.277 | 0.598 | 0.379 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.269 | 0.637 | 0.378 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.212 | 0.794 | 0.335 |
-| `gpt-5-mini` | Zero-Shot | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5 | 1.000 | 0.010 | 0.019 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.307 | 0.317 | 0.312 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.266 | 0.186 | 0.219 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.263 | 0.676 | 0.378 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.240 | 0.729 | 0.361 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.181 | 0.892 | 0.302 |
 | `gpt-5.4` | Zero-Shot | 0.490 | 0.167 | 0.249 |
 | `gpt-5.4` | Few-Shot-5 | 0.600 | 0.118 | 0.197 |
 | `gpt-5.4` | Few-Shot-10 | 0.462 | 0.340 | 0.392 |
@@ -107,11 +107,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.801 | 0.620 | 0.699 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.782 | 0.695 | 0.736 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.792 | 0.708 | 0.748 |
-| `gpt-5-mini` | Zero-Shot | 0.802 | 0.029 | 0.056 |
-| `gpt-5-mini` | Few-Shot-5 | 0.849 | 0.110 | 0.194 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.867 | 0.009 | 0.017 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.785 | 0.740 | 0.762 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.813 | 0.678 | 0.739 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.795 | 0.700 | 0.745 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.783 | 0.705 | 0.742 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.774 | 0.742 | 0.757 |
 | `gpt-5.4` | Zero-Shot | 0.763 | 0.757 | 0.760 |
 | `gpt-5.4` | Few-Shot-5 | 0.778 | 0.690 | 0.731 |
 | `gpt-5.4` | Few-Shot-10 | 0.783 | 0.632 | 0.700 |
@@ -129,11 +129,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.391 | 0.847 | 0.535 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.417 | 0.804 | 0.549 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.410 | 0.791 | 0.540 |
-| `gpt-5-mini` | Zero-Shot | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5 | 0.750 | 0.018 | 0.036 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.342 | 0.834 | 0.485 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.358 | 0.810 | 0.496 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.329 | 0.896 | 0.481 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.381 | 0.834 | 0.523 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.352 | 0.804 | 0.490 |
 | `gpt-5.4` | Zero-Shot | 0.321 | 0.914 | 0.475 |
 | `gpt-5.4` | Few-Shot-5 | 0.332 | 0.877 | 0.481 |
 | `gpt-5.4` | Few-Shot-10 | 0.316 | 0.853 | 0.461 |
@@ -151,11 +151,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.626 | 0.872 | 0.729 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.623 | 0.853 | 0.720 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.609 | 0.866 | 0.715 |
-| `gpt-5-mini` | Zero-Shot | 0.550 | 0.056 | 0.102 |
-| `gpt-5-mini` | Few-Shot-5 | 0.612 | 0.222 | 0.326 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.516 | 0.071 | 0.124 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.550 | 0.941 | 0.694 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.600 | 0.877 | 0.712 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.599 | 0.901 | 0.719 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.585 | 0.906 | 0.711 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.577 | 0.912 | 0.707 |
 | `gpt-5.4` | Zero-Shot | 0.617 | 0.884 | 0.727 |
 | `gpt-5.4` | Few-Shot-5 | 0.653 | 0.798 | 0.718 |
 | `gpt-5.4` | Few-Shot-10 | 0.662 | 0.755 | 0.706 |
@@ -173,11 +173,11 @@ Full per-label metrics for all models and prompting modes, evaluated on **10,000
 | `gpt-4.1` | Few-Shot-10 | 0.438 | 0.959 | 0.601 |
 | `gpt-4.1` | Few-Shot-5-Synth | 0.412 | 0.962 | 0.577 |
 | `gpt-4.1` | Few-Shot-10-Synth | 0.400 | 0.967 | 0.566 |
-| `gpt-5-mini` | Zero-Shot | 0.400 | 0.003 | 0.007 |
-| `gpt-5-mini` | Few-Shot-5 | 0.441 | 0.026 | 0.049 |
-| `gpt-5-mini` | Few-Shot-10 | 0.000 | 0.000 | 0.000 |
-| `gpt-5-mini` | Few-Shot-5-Synth | 0.600 | 0.005 | 0.010 |
-| `gpt-5-mini` | Few-Shot-10-Synth | 0.000 | 0.000 | 0.000 |
+| `gpt-4.1-mini` | Zero-Shot | 0.457 | 0.931 | 0.613 |
+| `gpt-4.1-mini` | Few-Shot-5 | 0.509 | 0.917 | 0.654 |
+| `gpt-4.1-mini` | Few-Shot-10 | 0.475 | 0.941 | 0.632 |
+| `gpt-4.1-mini` | Few-Shot-5-Synth | 0.508 | 0.876 | 0.643 |
+| `gpt-4.1-mini` | Few-Shot-10-Synth | 0.480 | 0.909 | 0.628 |
 | `gpt-5.4` | Zero-Shot | 0.566 | 0.867 | 0.685 |
 | `gpt-5.4` | Few-Shot-5 | 0.569 | 0.857 | 0.684 |
 | `gpt-5.4` | Few-Shot-10 | 0.601 | 0.836 | 0.699 |

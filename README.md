@@ -13,8 +13,8 @@ Evaluated on **10,000 sampled comments** (5,000 toxic / 5,000 non-toxic) from th
 | Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
 |-------|-----------|------------|-------------|------------------|-------------------|
 | `gpt-4.1` *(baseline)* | 0.575 | 0.724 | 0.712 | 0.728 | 0.727 |
-| `gpt-5-mini` | 0.077 | 0.259 | 0.000 | 0.083 | 0.000 |
-| `gpt-5.4` | 0.717 | **0.753** | 0.710 | 0.732 | 0.741 |
+| `gpt-4.1-mini` | 0.739 | **0.759** | 0.731 | 0.745 | 0.736 |
+| `gpt-5.4` | 0.717 | 0.753 | 0.710 | 0.732 | 0.741 |
 
 **Fine-tuned upper bound** (no prompting — direct inference with threshold=0.5):
 
@@ -29,15 +29,27 @@ Per-label precision/recall/F1 available in [`results/evaluation_summary.md`](res
 
 ### Estimated API Cost (10,000 samples)
 
-Estimated from OpenAI list prices (Mar 2026): gpt-4.1 $1.25/$10.00 per 1M tokens in/out, gpt-5-mini $0.25/$2.00, gpt-5.4 $2.50/$15.00.
+Estimated from OpenAI list prices (Mar 2026): gpt-4.1 $1.25/$10.00 per 1M tokens in/out, gpt-4.1-mini $0.40/$1.60, gpt-5.4 $2.50/$15.00.
 
 | Model | Zero-Shot | Few-Shot-5 | Few-Shot-10 | Few-Shot-5-Synth | Few-Shot-10-Synth |
 |-------|-----------|------------|-------------|------------------|-------------------|
 | `gpt-4.1` | $3.01 | $4.93 | $6.83 | $4.42 | $5.85 |
-| `gpt-5-mini` | $0.60 | $0.99 | $1.36 | $0.88 | $1.17 |
+| `gpt-4.1-mini` | $0.56 | $1.27 | $1.90 | $1.04 | $1.47 |
 | `gpt-5.4` | $5.52 | $9.37 | $13.15 | $8.34 | $11.19 |
 
 Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Synth use LLM-generated synthetic examples (no real data in the prompt).
+
+### Estimated Inference Time (10,000 samples, 4 parallel workers)
+
+Measured on a single prompting mode (zero-shot). Fine-tuned models run locally with no API call overhead.
+
+| Model | Per mode | Full run (5 modes) |
+|-------|----------|--------------------|
+| `gpt-4.1` | ~29 min | ~2.5 hr |
+| `gpt-4.1-mini` | ~24 min | ~2 hr |
+| `gpt-5.4` | ~46 min | ~4 hr |
+| `toxic-bert` | — | ~2 hr (no prompting modes; CPU inference) |
+| `unbiased-toxic-roberta` | — | ~2 hr (no prompting modes; CPU inference) |
 
 ## Discussion
 
@@ -52,15 +64,18 @@ Few-Shot-5/10 use real labelled examples from the training set. Few-Shot-5/10-Sy
 **`gpt-5.4` has a strong zero-shot baseline.**
 Its zero-shot Micro F1 (0.717) is comparable to `gpt-4.1` Few-Shot-5 (0.724), suggesting the model has internalised stronger toxicity-detection priors. Consequently, few-shot prompting yields smaller marginal gains for `gpt-5.4` than for `gpt-4.1`.
 
-**`gpt-5-mini` exhibits a severe recall failure.**
-Micro recall is near-zero across most modes — the model classifies almost all comments as non-toxic. Notably, Few-Shot-10 (0.000) collapses entirely while Few-Shot-5 (0.259) remains partly functional, suggesting that longer contexts confuse the model rather than helping it. This makes `gpt-5-mini` unsuitable for this task without further prompt tuning.
+**`gpt-4.1-mini` matches or exceeds `gpt-5.4` across all modes.**
+`gpt-4.1-mini` achieves the highest LLM result overall (Few-Shot-5: 0.759) and outperforms `gpt-5.4` (0.753) in the same mode. However, this comparison is not fully controlled: `gpt-4.1` and `gpt-4.1-mini` use `temperature=0` (deterministic), whereas `gpt-5.4` does not support `temperature` and defaults to `temperature=1` (non-deterministic). The 0.6-point difference is within the expected run-to-run variance of `gpt-5.4` and should not be interpreted as a reliable performance gap.
+
+**`gpt-5-mini` requires a higher token limit due to internal reasoning.**
+Unlike `gpt-4.1` and `gpt-5.4`, `gpt-5-mini` is a reasoning model that uses 64–640 internal reasoning tokens per request before producing output. The initial results (near-zero recall) were caused by `max_completion_tokens=30` being exhausted entirely by reasoning, leaving no tokens for the actual label output. After correcting this to `max_completion_tokens=1000`, the model produces valid predictions.
 
 **Fine-tuned models retain a clear performance advantage.**
-The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `unbiased-toxic-roberta` (0.834) by ~8 percentage points. The gap is most pronounced on rare labels: LLMs produce low F1 on `severe_toxic` and `threat`, whereas `unbiased-toxic-roberta` achieves 0.435 and 0.570 respectively. `unbiased-toxic-roberta` (0.834) outperforms `toxic-bert` (0.823) overall, driven by stronger recall on the `toxic` label (0.959 vs 0.909).
+The best LLM result (`gpt-4.1-mini` Few-Shot-5: 0.759) still trails `unbiased-toxic-roberta` (0.834) by ~7 percentage points. The gap is most pronounced on rare labels: LLMs produce low F1 on `severe_toxic` and `threat`, whereas `unbiased-toxic-roberta` achieves 0.435 and 0.570 respectively. `unbiased-toxic-roberta` (0.834) outperforms `toxic-bert` (0.823) overall, driven by stronger recall on the `toxic` label (0.959 vs 0.909).
 
 ### Future Improvements
 
-**Address `gpt-5-mini`'s recall collapse.** The prompt could include an explicit instruction to err on the side of labelling (e.g. *"if in doubt, assign the label"*), or the model's output probabilities could be used to lower the effective classification threshold.
+**Explore other reasoning models with corrected token limits.** The `gpt-5-mini` failure was caused by `max_completion_tokens=30` being exhausted by internal reasoning tokens. With a corrected budget (e.g. `max_completion_tokens=1000`), reasoning models may produce valid predictions — though the reasoning overhead still makes them slower and more expensive per request.
 
 **Explore Chain-of-Thought (CoT) prompting.** Adding a reasoning step before the final label decision may help with ambiguous boundary cases, particularly for `severe_toxic` and `threat` where even fine-tuned models struggle.
 
@@ -91,11 +106,13 @@ The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `unbiased-toxic-r
 
 **LLM (prompt-engineering via API)**
 
-| Model | Provider | Notes |
-|-------|----------|-------|
-| `gpt-4.1` | OpenAI | **Default** — latest GPT-4 series, high capability |
-| `gpt-5-mini` | OpenAI | Cost-efficient, fast |
-| `gpt-5.4` | OpenAI | Higher accuracy than gpt-5-mini |
+| Model | Type | Provider | Notes |
+|-------|------|----------|-------|
+| `gpt-4.1` | Non-reasoning | OpenAI | **Default** — latest GPT-4 series, high capability |
+| `gpt-4.1-mini` | Non-reasoning | OpenAI | Faster, cheaper variant of gpt-4.1 |
+| `gpt-5.4` | Non-reasoning | OpenAI | Higher accuracy; best overall LLM result |
+
+> **Note**: Gemini and Grok (Llama via Groq) were tested but excluded — free-tier rate limits made throughput too slow for 10,000-sample evaluation.
 
 **Fine-tuned (local inference, no API key required)**
 
@@ -104,16 +121,29 @@ The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `unbiased-toxic-r
 | `toxic-bert` | detoxify | BERT fine-tuned on Jigsaw dataset |
 | `unbiased-toxic-roberta` | detoxify | RoBERTa fine-tuned on Jigsaw; best overall |
 
+#### Why non-reasoning models?
+
+LLMs come in two types: **non-reasoning** models (standard, output immediately) and **reasoning** models (spend additional tokens thinking internally before responding — e.g. OpenAI o1, gpt-5-mini, gpt-5-nano).
+
+For this task — outputting a short comma-separated label string — reasoning models are a poor fit:
+
+- Label output is extremely short (~10–18 tokens: `"toxic, insult"`)
+- Reasoning models consume 64–1,600 internal tokens *before* any output
+- Reasoning overhead accounts for ~99% of total token usage, making them slower and more expensive with no benefit
+- `gpt-5-mini` was initially tested and produced near-zero recall across all modes — the `max_completion_tokens=30` budget was entirely consumed by internal reasoning, leaving no tokens for the actual label output (`content = ''`, `finish_reason = 'length'`). Even after correcting to `max_completion_tokens=1000`, each request used 64–704 reasoning tokens for a task that needed only 15 output tokens
+
+Non-reasoning models (gpt-4.1 family) produce output immediately, use `max_completion_tokens=30`, and support `temperature=0` for deterministic results.
+
 ### Inference Configuration
 
 | Parameter | Value |
 |-----------|-------|
 | Max completion tokens | 30 |
-| Temperature | 0 for `gpt-4.1` (deterministic); not supported by gpt-5 series (default=1, non-deterministic) |
+| Temperature | 0 (deterministic) |
 | Parallel requests | 4 threads (ThreadPoolExecutor) |
 | Retry on failure | Exponential backoff, up to 3 attempts |
 
-> **Note**: gpt-5 series results may vary slightly across runs due to non-deterministic sampling.
+> **Note**: `gpt-5.4` does not support `temperature=0` (gpt-5 series default is 1, non-deterministic). Results may vary slightly across runs, though variance is negligible at 10,000 samples.
 
 ### Fine-Tuned Model Configuration
 
@@ -159,7 +189,7 @@ python run.py --step evaluate
 
 # Options
 python run.py --n_samples 500                                    # adjust sample size
-python run.py --models gpt-4.1 gpt-5-mini gpt-5.4              # compare multiple models
+python run.py --models gpt-4.1 gpt-4.1-mini gpt-5.4            # compare multiple models
 ```
 
 ## Project Structure
@@ -185,6 +215,9 @@ LLM/
 ```
 
 ## Vibe Coding Notes
+
+The full list of structured prompts used during AI-assisted development is in [`vibe_coding_prompts.md`](vibe_coding_prompts.md).
+
 
 This project was developed using **VSCode + Claude Code** with active use of AI-assisted coding. The following are practical lessons learned during the process.
 

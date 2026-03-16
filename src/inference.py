@@ -62,7 +62,7 @@ def call_llm(
                 ],
                 'max_completion_tokens': 30,
             }
-            # GPT-5+ models only support the default temperature (1); omit for them
+            # gpt-5 series does not support temperature; gpt-4.1 family uses temperature=0 (deterministic)
             if not model.startswith('gpt-5'):
                 kwargs['temperature'] = 0
             resp = client.chat.completions.create(**kwargs, timeout=30)
