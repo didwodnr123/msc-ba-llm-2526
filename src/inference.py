@@ -32,12 +32,7 @@ except ImportError:
 
 def _get_client(model: str) -> OpenAI:
     """Return the appropriate OpenAI-compatible client based on model name."""
-    if model.startswith('gemini'):
-        return OpenAI(
-            api_key=os.environ.get('GEMINI_API_KEY'),
-            base_url='https://generativelanguage.googleapis.com/v1beta/openai/',
-        )
-    if any(model.startswith(p) for p in ('llama', 'mixtral', 'gemma', 'qwen', 'deepseek', 'whisper')):
+    if any(model.startswith(p) for p in ('llama', 'meta-llama', 'mixtral', 'gemma', 'qwen', 'deepseek', 'whisper', 'moonshotai')):
         return OpenAI(
             api_key=os.environ.get('GROQ_API_KEY'),
             base_url='https://api.groq.com/openai/v1',
@@ -81,7 +76,9 @@ def call_llm(
             return text, cost
         except Exception as e:
             if attempt < max_retries - 1:
-                wait = 2 ** attempt
+                # Use longer waits for rate-limit errors (429)
+                is_rate_limit = '429' in str(e) or 'rate_limit' in str(e).lower()
+                wait = (5 * (3 ** attempt)) if is_rate_limit else (2 ** attempt)
                 print(f"  API error (retry {attempt+1}/{max_retries}): {e} — waiting {wait}s", flush=True)
                 time.sleep(wait)
             else:

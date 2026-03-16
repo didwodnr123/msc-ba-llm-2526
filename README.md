@@ -89,14 +89,20 @@ The best LLM result (`gpt-5.4` Few-Shot-5: 0.753) still trails `unbiased-toxic-r
 
 ### Models
 
+**LLM (prompt-engineering via API)**
+
 | Model | Provider | Notes |
 |-------|----------|-------|
 | `gpt-4.1` | OpenAI | **Default** — latest GPT-4 series, high capability |
 | `gpt-5-mini` | OpenAI | Cost-efficient, fast |
 | `gpt-5.4` | OpenAI | Higher accuracy than gpt-5-mini |
-| `gemini-2.0-flash` | Google Gemini | Free tier (1,500 req/day); set `GEMINI_API_KEY` |
-| `llama-3.3-70b-versatile` | Groq | Free tier (14,400 req/day); set `GROQ_API_KEY` |
-| `mixtral-8x7b-32768` | Groq | Free tier; faster than Llama 70B |
+
+**Fine-tuned (local inference, no API key required)**
+
+| Model | Library | Notes |
+|-------|---------|-------|
+| `toxic-bert` | detoxify | BERT fine-tuned on Jigsaw dataset |
+| `unbiased-toxic-roberta` | detoxify | RoBERTa fine-tuned on Jigsaw; best overall |
 
 ### Inference Configuration
 
