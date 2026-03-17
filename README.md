@@ -188,6 +188,7 @@ python run.py --step evaluate
 # Options
 python run.py --n_samples 500                                    # adjust sample size
 python run.py --models gpt-4.1 gpt-4.1-mini gpt-5.4            # compare multiple models
+python run.py --workers 8                                        # increase parallel requests
 ```
 
 ## Project Structure
@@ -206,8 +207,9 @@ LLM/
 │   ├── test.csv               # Jigsaw test set (~153K comments)
 │   └── test_labels.csv        # Test labels (~63K labelled rows)
 ├── results/                   # Prediction CSVs and evaluation summary
-├── report/
-│   └── report.md              # Full project report
+├── figures/                   # Generated plots (EDA and results visualisation)
+├── eda.ipynb                  # Exploratory data analysis notebook
+├── results_viz.ipynb          # Results visualisation notebook
 ├── run.py                     # Pipeline entry point
 └── requirements.txt
 ```
