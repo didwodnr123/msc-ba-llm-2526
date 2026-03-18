@@ -27,6 +27,8 @@ Micro F1 is used as the primary metric because it aggregates TP/FP/FN across all
 
 Per-label precision/recall/F1 available in [`results/evaluation_summary.md`](results/evaluation_summary.md)
 
+Full results visualisation (charts, heatmaps, cost and error analysis) in [`results_viz.ipynb`](results_viz.ipynb)
+
 ### Estimated API Cost (10,000 samples)
 
 Estimated from OpenAI list prices (Mar 2026): gpt-4.1 $1.25/$10.00 per 1M tokens in/out, gpt-4.1-mini $0.40/$1.60, gpt-5.4 $2.50/$15.00.
@@ -92,6 +94,7 @@ The best LLM result (`gpt-4.1-mini` Few-Shot-5: 0.759) still trails `unbiased-to
 - **Stratified sampling**: 5,000 toxic / 5,000 non-toxic (random_state=42)
 - "Toxic" defined as having at least one positive label across the 6 categories
 - **Text cleaning**: HTML tag removal and whitespace normalization
+- Exploratory data analysis in [`eda.ipynb`](eda.ipynb)
 
 ### Few-Shot Example Selection
 
