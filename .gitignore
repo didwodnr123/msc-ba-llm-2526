@@ -24,3 +24,6 @@ __pycache__/
 
 # Claude Code
 .claude/
+
+# Individual assignment
+individual/
